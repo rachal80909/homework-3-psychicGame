@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Psychic Game</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <p>
+        <h1>The Psychic Game</h1>
+    </p>
+    <p>
+        <h4>Guess what letter I'm thinking of</h4>
+    </p>
+    <div id='game'>
+        <p>
+            <h4>Wins</h4>
+        </p>
+        <p>
+            <h4>Losses</h4>
+        </p>
+        <p>
+            <h4>Guesses Left</h4>
+        </p>
+        <p>
+            <h4>Your guesses so far</h4>
+        </p>
+    </div>
+    <script>
+        var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        //did not need to pass a parameter into this getrandomLetter function
+        var randomLetter = getRandomLetter();
+        var guess;
+        var guessCount = 0;
+        var correctGuess = false;
+        var letterIndex;
+        console.log(randomLetter, "here is the random letter")
+            //after setting randomLetter = to a number to get a random index we  are then overwriting that value with an empty string
+            // var randomLetter = "";
+
+        //name your functions what they do, this actually gets a random index.
+        function getRandomLetter() {
+            letterIndex = Math.floor(Math.random() * letterArray.length);
+            //added this into this function
+            return letterArray[letterIndex];
+        }
+
+        // global variables
+        var wins = 0;
+        var losses = 0;
+        var currentGuesses = [];
+        var guessesLeft = 9;
+        // [Math.floor(Math.random() * .length)];
+
+        console.log("Wins: " + wins + " Losses: " + losses + " GuessesLeft: " + guessesLeft + " Guesses so far");
+
+        document.onkeyup = function(event) {
+            var charCode = event.keyCode
+
+            //If the key is a letter then run the game
+            if ((charCode > 64 && charCode < 91) && (currentGuesses.indexOf(event.key) === -1))
+
+            {
+                guess = event.key;
+                updateScreen();
+                console.log('my guess', guess);
+
+                //we must compare the random letter we generated earlier to the key input here
+                if (randomLetter === guess) {
+                    youWin();
+
+                }
+                //if they dont win they we subtractguesses
+                else {
+                    guessesLeft--;
+                    currentGuesses.push(guess);
+                    updateScreen();
+                }
+
+                //need to control a loss
+                if (guessesLeft === 0) {
+                    alert("You Lose")
+                    guessesLeft = 9;
+                    currentGuesses = [];
+                    randomLetter = getRandomLetter();
+                    losses++;
+                    updateScreen();
+                }
+
+                //needa function we can call to updte our screen, we had originally an unedfined variable.
+                function updateScreen() {
+                    var html = `<p>
+                          <h4>Wins: ${wins}</h4>
+                      </p>
+                      <p>
+                          <h4>Losses: ${losses}</h4>
+                      </p>
+                      <p>
+                          <h4>Guesses Left: ${guessesLeft}</h4>
+                      </p>
+                      <p>
+                          <h4>Your guesses so far: ${currentGuesses.join(', ')}</h4>
+                      </p>`;
+                    document.querySelector("#game").innerHTML = html;
+
+                }
+
+                function youWin() {
+                    wins++;
+                    alert("You won!");
+                    guessesLeft = 9;
+                    currentGuesses = [];
+                    //wrong var name here
+                    randomLetter = getRandomLetter();
+                    // console.log("Wins: " + wins + " Losses: " + losses + " GuessesLeft: " + guessesLeft + " Guesses so far: " + guessesSoFar + " Computer picked: " + letterToBeGuessed);
+                    updateScreen();
+                }
+            }
+            //Else tell the user they press an incorrect key
+            else {
+                alert("You pressed an invalid key or you already made that guess");
+            }
+
+
+        }
+    </script>
+
+</body>
+
+</html>
